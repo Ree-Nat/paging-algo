@@ -46,7 +46,9 @@ class FirstInFirstOut{
         bw.close();
     }
 
-    //Generates first in 
+    //Generates first in frist out paging algorithm
+    //Input: input of testing data
+    //framesize max frame size to test pagefault
     static private int FIFO(String textFile, int frameSize) throws IOException
     {
         int pageFaults = 0; 
@@ -60,7 +62,7 @@ class FirstInFirstOut{
         int readIndex;
         while((readLine = rd.readLine()) != null) 
             {
-            if(!frameList.contains(readLine) && !((readIndex = frameList.indexOf(null)) ==-1)){
+            if(!frameList.contains(readLine) && !((readIndex = frameList.indexOf(null)) ==-1)){ //replace null with page 
                 pageFaults +=1;
                 frameList.set(readIndex, readLine);
                 System.out.println("Page fault for: " + readLine); 
@@ -88,7 +90,7 @@ class FirstInFirstOut{
     }
 
     public static void main(String[] args) throws IOException {
-        generateReferenceStrings("data.txt");
+        //generateReferenceStrings("data.txt");
         System.out.println("Total page faults: " + FIFO("data.txt", 3));
     }
 }
