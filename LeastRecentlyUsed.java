@@ -28,7 +28,7 @@ class LeastRecentlyUsed{
         int pageAmount = 8;
         
         //For the amount of unique page create a unique string of size 30 seven times and put in list
-        for(int x = 0; x <= pageAmount; x++)
+        for(int x = 0; x < pageAmount; x++)
         {
             StringBuilder sb = new StringBuilder("");
             for(int y = 0; y < 30; y++)
