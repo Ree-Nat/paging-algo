@@ -111,6 +111,6 @@ class OptimalAlgorithm{
 
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt");
-        System.out.println("Number of page faults: " + Optimal("data.txt", 3));
+        System.out.println("Optimal Number of page faults in data.txt: " + Optimal("data.txt", 3));
     }
 }

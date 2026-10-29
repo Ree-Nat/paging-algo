@@ -91,6 +91,6 @@ class FirstInFirstOut{
 
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt");
-        System.out.println("Total page faults: " + FIFO("data.txt", 3));
+        System.out.println("Total page faults for FIFO in data.txt: " + FIFO("data.txt", 3));
     }
 }

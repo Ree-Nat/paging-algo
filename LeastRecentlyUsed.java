@@ -114,6 +114,6 @@ class LeastRecentlyUsed{
 
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt");
-        System.out.println("LRU Number of page faults: " + LRU("data.txt", 3));
+        System.out.println("LRU Number of page faults in data.txt: " + LRU("data.txt", 1));
     }
 }
