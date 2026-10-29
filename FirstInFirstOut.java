@@ -51,12 +51,13 @@ class FirstInFirstOut{
     //framesize max frame size to test pagefault
     static private int FIFO(String textFile, int frameSize) throws IOException
     {
+        if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
         int pageFaults = 0; 
         File readFile = new File(textFile);
         String[] stringArray = new String[frameSize];
         List<String> frameList = new ArrayList<String>(Arrays.asList(stringArray));
         BufferedReader rd = new BufferedReader(new FileReader(readFile));
-        int queuePointer = 0;
+        int queuePointer = 0; //circular pointer, points to 
 
         String readLine;
         int readIndex;

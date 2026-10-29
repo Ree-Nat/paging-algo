@@ -57,6 +57,7 @@ class LeastRecentlyUsed{
     //Int frameSize: Size of frame 
     static private int LRU(String textFile, int frameSize) throws IOException
     {
+        if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
         int pageFaults = 0; 
         File readFile = new File(textFile);
         List<String> pageList = new ArrayList<String>();
