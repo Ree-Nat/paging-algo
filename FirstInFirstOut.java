@@ -40,19 +40,63 @@ class FirstInFirstOut{
     //Generates first in frist out paging algorithm
     //Input: input of testing data
     //framesize max frame size to test pagefault
-    static private int FIFO(String textFile, int frameSize) throws IOException
+    static private float FIFO(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
-        int pageFaults = 0; 
-        File readFile = new File(textFile);
-        String[] stringArray = new String[frameSize];
-        List<String> frameList = new ArrayList<String>(Arrays.asList(stringArray));
+        File readFile = new File(textFile); 
         BufferedReader rd = new BufferedReader(new FileReader(readFile));
-        int queuePointer = 0; //circular pointer, points to 
+        int totalPageFaults = 0;
+        int totalJobs = 0;
+        //circular pointer, points to 
 
-        String readLine;
-        int readIndex;
-        while((readLine = rd.readLine()) != null) 
+        String referenceString;
+        while((referenceString = rd.readLine()) != null) 
+        {
+            int nullIndex;
+            System.out.println("Now calculating page fault for reference string " 
+                                + referenceString + "\n----------\n----------");
+            int queuePointer = 0;
+            Character[] characterArray = new Character[frameSize];
+            List<Character> frameList = new ArrayList<Character>(Arrays.asList(characterArray));
+            int pageFaults = 0; 
+            for(int currentPageIndex = 0; currentPageIndex < referenceString.length(); currentPageIndex++)
+            {
+                Character currentCharacter = referenceString.charAt(currentPageIndex);
+                if(!frameList.contains(currentCharacter) 
+                    && ((nullIndex = frameList.indexOf(null)) != -1))
+                {
+                    pageFaults += 1;
+                    frameList.set(nullIndex, currentCharacter);
+                    System.out.println("Page fault for: " + currentCharacter); 
+                }
+                else if(!frameList.contains(currentCharacter))
+                {
+                    pageFaults +=1;
+                    System.out.println("Page fault for: " + currentCharacter); 
+                    frameList.set(queuePointer, currentCharacter);
+                    queuePointer +=1;
+                }
+                else
+                {
+                    System.out.println("No page fault for: " + referenceString.charAt(currentPageIndex)); 
+                }
+
+                if(queuePointer >= frameList.size())
+                {
+                    queuePointer = 0;
+                }
+           
+                IntStream.range(0, frameList.size())
+                    .forEach(i -> System.out.println("frame" + (i+1) + ": " + frameList.get(i)));
+
+                System.out.println("-------------------------------------");
+            }
+                System.out.println("Total page fault for reference string: " + referenceString + " -> "
+                                 + pageFaults);
+                totalPageFaults += pageFaults;
+                totalJobs += 1;
+
+            /* 
             {
             if(!frameList.contains(readLine) && !((readIndex = frameList.indexOf(null)) ==-1)){ //replace null with page 
                 pageFaults +=1;
@@ -76,13 +120,16 @@ class FirstInFirstOut{
                 .forEach(i -> System.out.println("frame:" + (i+1) + ": " + frameList.get(i)));
 
             System.out.println("-------------------------------------");
+            */
         }
+        int averagePageFault = totalPageFaults/totalJobs;
         rd.close();
-        return pageFaults;
+        System.out.println("Average amount of page faults FIFO: " + averagePageFault);
+        return averagePageFault;
     }
 
     public static void main(String[] args) throws IOException {
-        generateReferenceStrings("data.txt", 50);
-        //System.out.println("Total page faults for FIFO in data.txt: " + FIFO("data.txt", 3));
+        //generateReferenceStrings("data.txt", 50);
+        System.out.println("Total page faults for FIFO in data.txt: " + FIFO("data.txt", 3));
     }
 }
