@@ -83,7 +83,7 @@ class LeastRecentlyUsed{
                     List<Character> pageList = pastReferences.chars()
                                                 .mapToObj(c -> (char) c)
                                                 .toList();
-                    int oldestUse = Integer.MAX_VALUE;
+                    int oldestUse = referenceString.length(); //farthest
                     int victimIndex = 0;
                     for(Character framePage : frameList)
                     {

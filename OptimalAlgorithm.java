@@ -41,7 +41,11 @@ class OptimalAlgorithm{
 
     }
 
-    //Generates first in 
+        //Calculates average page fault for first in first out paging algorithm
+    //by using a queue pointer that wraps around everytime it goes over the frame size. 
+    //Input: input of testing data
+    //framesize max frame size to test pagefault
+    //Returns-> the average page fault per input string file
     static private float Optimal(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
@@ -55,12 +59,14 @@ class OptimalAlgorithm{
         while((referenceString = rd.readLine()) != null){ 
             int pageFaults = 0; 
              totalReferenceStrings +=1;
+               System.out.println("Now calculating page fault for reference string " 
+                                + referenceString + "\n----------\n----------");
              List<Character> frameList = new ArrayList<Character>(Arrays.asList(new Character[frameSize]));
              for(int currentPageIndex = 0; currentPageIndex < referenceString.length(); currentPageIndex++)
              {
                 Character currentPage = referenceString.charAt(currentPageIndex);
-                int nullIndex;
-                if(!frameList.contains(currentPage) && (nullIndex = frameList.indexOf(currentPage)) != -1)
+                int nullIndex = frameList.indexOf(null);
+                if(nullIndex != -1 && !frameList.contains(currentPage)) //if there is a null index
                 {
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults += 1;
@@ -68,29 +74,30 @@ class OptimalAlgorithm{
                 }
                 else if(!frameList.contains(currentPage))
                 {
+                    
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults +=1;
-                    Map<Integer, Character> distanceMap = new HashMap<>(); 
-                    String futureReferences = referenceString.substring(currentPageIndex);
-                    List<Character> pageList = futureReferences.chars()
+                    String pastReferences = referenceString.substring(currentPageIndex);
+                    List<Character> pageList = pastReferences.chars()
                                                 .mapToObj(c -> (char) c)
                                                 .toList();
+                    int earliestUse = 0;
+                    int victimIndex = 0;
                     for(Character framePage : frameList)
                     {
-                        int distance = 0;
-                        distance += pageList.indexOf(framePage);
-                        distanceMap.put(distance, framePage);
+                        int lastUse = pageList.indexOf(framePage);
+                        if(lastUse == -1)
+                        {
+                            victimIndex = frameList.indexOf(framePage);
+                            lastUse = referenceString.length(); //never used again
+                        }
+                        if(lastUse >= earliestUse)
+                        {
+                            earliestUse = lastUse;
+                            victimIndex = frameList.indexOf(framePage);
+                        }
                     }
-                    int maxDistance = Collections.max(distanceMap.keySet()); 
-                    if(distanceMap.containsKey(-1)) //case where an item is not used forever
-                    {
-                        Character unusedPage = distanceMap.get(-1);
-                        frameList.set(frameList.indexOf(unusedPage), currentPage);
-                    }
-                    else{
-                        Character pageRepalcement = pageList.get(maxDistance);
-                        frameList.set(frameList.indexOf(pageRepalcement), currentPage);
-                    }
+                    frameList.set(victimIndex, currentPage);
                 }
                 IntStream.range(0, frameList.size())
                     .forEach(i -> System.out.println("frame" + (i+1) + ": " + frameList.get(i)));
@@ -100,56 +107,8 @@ class OptimalAlgorithm{
                                                 referenceString + "-> " + pageFaults);
                 totalPageFaults += pageFaults;
      }
-
-        /* 
-        String readLine;
-        while((readLine = rd.readLine()) != null){ 
-            pageList.add(readLine);
-        }
-
-        
-        for(int page = 0; page < pageList.size(); page++) {
-           int nullIndex;
-           String pageReference = pageList.get(page);
-
-           if(!frameList.contains(pageReference) && ((nullIndex = frameList.indexOf(null)) != -1)) 
-           {
-                System.out.println("Page fault for: " + pageReference);
-                pageFaults +=1;
-                frameList.set(nullIndex, pageList.get(page));
-                IntStream.range(0, frameList.size())
-                    .forEach(i -> System.out.println("frame:" + (i+1) + ": " + frameList.get(i)));
-
-           }
-           else if(!frameList.contains(pageReference))
-           {
-                System.out.println("Page fault for: " + pageReference);
-                pageFaults +=1;
-                Map<Integer, String> distanceMap = new HashMap<>(); 
-                List<String> pageSublist = pageList.subList(page, pageList.size());
-                for(String framePage : frameList)
-                {
-                    int distance = 0;
-                    distance += pageSublist.indexOf(framePage);
-                    distanceMap.put(distance, framePage);
-                }
-                int maxDistance = Collections.max(distanceMap.keySet()); 
-                if(distanceMap.containsKey(-1)) //case where an item is not used forever
-                {
-                    String unusedPage = distanceMap.get(-1);
-                    frameList.set(frameList.indexOf(unusedPage), pageList.get(page));
-                }
-                else{
-                    String pageRepalcement = pageSublist.get(maxDistance);
-                    frameList.set(frameList.indexOf(pageRepalcement), pageList.get(page));
-                }
-               
-                      IntStream.range(0, frameList.size())
-                    .forEach(i -> System.out.println("frame:" + (i+1) + ": " + frameList.get(i)));
-           }
-            /*-------------------------------------------------------------------- Print pages*/
         rd.close();
-        float averagePageFault = totalPageFaults / totalReferenceStrings;
+        float averagePageFault = (float) totalPageFaults / totalReferenceStrings;
         return averagePageFault;
     }
        
