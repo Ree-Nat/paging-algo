@@ -80,7 +80,7 @@ class LeastRecentlyUsed{
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults +=1;
                     String pageList = referenceString.substring(0, currentPageIndex);
-                    List<Character> pastReferences = pastReferences.chars()
+                    List<Character> pastReferences = pageList.chars()
                                                 .mapToObj(c -> (char) c)
                                                 .toList();
                     int oldestUse = referenceString.length(); //farthest
