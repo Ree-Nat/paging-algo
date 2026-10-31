@@ -96,14 +96,14 @@ class FirstInFirstOut{
                 totalPageFaults += pageFaults;
                 totalJobs += 1;
         }
-        int averagePageFault = totalPageFaults/totalJobs;
+        float averagePageFault = (float) totalPageFaults/totalJobs;
         rd.close();
         return averagePageFault;
     }
 
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt", 50);
-        int frameSize = 6;
+        int frameSize = 4;
         System.out.println("Average Total page faults for FIFO in data.txt with frame size of "+ frameSize
         +": " + FIFO("data.txt", frameSize));
     }
