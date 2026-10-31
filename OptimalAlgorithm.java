@@ -114,6 +114,8 @@ class OptimalAlgorithm{
        
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt");
-        System.out.println("Optimal Number of average page faults in data.txt: " + Optimal("data.txt", 3));
+        int frameSize = 4;
+        System.out.println("Average Total page faults for FIFO in data.txt with frame size of "+ frameSize
+        +": " + Optimal("data.txt", frameSize));
     }
 }
