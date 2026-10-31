@@ -77,15 +77,15 @@ class OptimalAlgorithm{
                     
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults +=1;
-                    String pastReferences = referenceString.substring(currentPageIndex);
-                    List<Character> pageList = pastReferences.chars()
+                    String pageList = referenceString.substring(currentPageIndex);
+                    List<Character> futureReferences = pageList.chars()
                                                 .mapToObj(c -> (char) c)
                                                 .toList();
                     int earliestUse = 0;
                     int victimIndex = 0;
                     for(Character framePage : frameList)
                     {
-                        int lastUse = pageList.indexOf(framePage);
+                        int lastUse = futureReferences.indexOf(framePage);
                         if(lastUse == -1)
                         {
                             victimIndex = frameList.indexOf(framePage);

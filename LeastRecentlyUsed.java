@@ -79,15 +79,15 @@ class LeastRecentlyUsed{
                     
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults +=1;
-                    String pastReferences = referenceString.substring(0, currentPageIndex);
-                    List<Character> pageList = pastReferences.chars()
+                    String pageList = referenceString.substring(0, currentPageIndex);
+                    List<Character> pastReferences = pastReferences.chars()
                                                 .mapToObj(c -> (char) c)
                                                 .toList();
                     int oldestUse = referenceString.length(); //farthest
                     int victimIndex = 0;
                     for(Character framePage : frameList)
                     {
-                        int lastUse = pageList.lastIndexOf(framePage);
+                        int lastUse = pastReferences.lastIndexOf(framePage);
                         if(lastUse <= oldestUse)
                         {
                             oldestUse = lastUse;
