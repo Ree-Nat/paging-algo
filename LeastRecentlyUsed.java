@@ -42,10 +42,12 @@ class LeastRecentlyUsed{
     }
 
 
-    //Executes optimal algorithm for page faults. It looks ahead of incoming pages and takes the farthest
-    //of the current frame's pages for replacement
-    //String textfile: use for testing data
-    //Int frameSize: Size of frame 
+    //Calculates average page fault for least recently used paging algorithm by calculating the distance
+    //of the furthest, past page reference 
+    //by using a queue pointer that wraps around everytime it goes over the frame size. 
+    //Input: input of testing data
+    //framesize max frame size to test pagefault
+    //Returns-> the average page fault per input string file
     static private float LRU(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
@@ -59,6 +61,8 @@ class LeastRecentlyUsed{
         while((referenceString = rd.readLine()) != null){ 
             int pageFaults = 0; 
              totalReferenceStrings +=1;
+               System.out.println("Now calculating page fault for reference string " 
+                                + referenceString + "\n----------\n----------");
              List<Character> frameList = new ArrayList<Character>(Arrays.asList(new Character[frameSize]));
              for(int currentPageIndex = 0; currentPageIndex < referenceString.length(); currentPageIndex++)
              {

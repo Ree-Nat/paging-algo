@@ -13,8 +13,8 @@ import java.util.stream.IntStream;
 
 class FirstInFirstOut{
 
-    //Generates a testing data file
-    //textFile: the name of the data file to be outputted
+    //Generates a testing data file of reference strning bounded to 8 pages.
+    //textFile: the name of the data file to be outputted 
     static private void generateReferenceStrings(String textFile, int referenceStringAmount) throws IOException
     {
         Random random = new Random(); 
@@ -37,10 +37,11 @@ class FirstInFirstOut{
 
     }
 
-    //Generates first in frist out paging algorithm
+    //Calculates average page fault for first in first out paging algorithm
+    //by using a queue pointer that wraps around everytime it goes over the frame size. 
     //Input: input of testing data
     //framesize max frame size to test pagefault
-    //Returns: the average page fault per input string file
+    //Returns-> the average page fault per input string file
     static private float FIFO(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
