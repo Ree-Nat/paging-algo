@@ -67,8 +67,8 @@ class LeastRecentlyUsed{
              for(int currentPageIndex = 0; currentPageIndex < referenceString.length(); currentPageIndex++)
              {
                 Character currentPage = referenceString.charAt(currentPageIndex);
-                int nullIndex;
-                if(!frameList.contains(currentPage) && (nullIndex = frameList.indexOf(currentPage)) != -1)
+                int nullIndex = frameList.indexOf(null);
+                if(nullIndex != -1 && !frameList.contains(currentPage)) //if there is a null index
                 {
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults += 1;
@@ -76,29 +76,25 @@ class LeastRecentlyUsed{
                 }
                 else if(!frameList.contains(currentPage))
                 {
+                    
                     System.out.println("Page fault for: " + currentPage);
                     pageFaults +=1;
-                    Map<Integer, Character> distanceMap = new HashMap<>(); 
-                    String futureReferences = referenceString.substring(0, currentPageIndex);
-                    List<Character> pageList = futureReferences.chars()
+                    String pastReferences = referenceString.substring(0, currentPageIndex);
+                    List<Character> pageList = pastReferences.chars()
                                                 .mapToObj(c -> (char) c)
-                                                .toList().reversed();
+                                                .toList();
+                    int oldestUse = Integer.MAX_VALUE;
+                    int victimIndex = 0;
                     for(Character framePage : frameList)
                     {
-                        int distance = 0;
-                        distance += pageList.indexOf(framePage);
-                        distanceMap.put(distance, framePage);
+                        int lastUse = pageList.lastIndexOf(framePage);
+                        if(lastUse <= oldestUse)
+                        {
+                            oldestUse = lastUse;
+                            victimIndex = frameList.indexOf(framePage);
+                        }
                     }
-                    int maxDistance = Collections.max(distanceMap.keySet()); 
-                    if(distanceMap.containsKey(-1)) //case where an item is not used forever
-                    {
-                        Character unusedPage = distanceMap.get(-1);
-                        frameList.set(frameList.indexOf(unusedPage), currentPage);
-                    }
-                    else{
-                        Character pageRepalcement = pageList.get(maxDistance);
-                        frameList.set(frameList.indexOf(pageRepalcement), currentPage);
-                    }
+                    frameList.set(victimIndex, currentPage);
                 }
                 IntStream.range(0, frameList.size())
                     .forEach(i -> System.out.println("frame" + (i+1) + ": " + frameList.get(i)));
@@ -109,7 +105,7 @@ class LeastRecentlyUsed{
                 totalPageFaults += pageFaults;
      }
         rd.close();
-        float averagePageFault = totalPageFaults / totalReferenceStrings;
+        float averagePageFault = (float) totalPageFaults / totalReferenceStrings;
         return averagePageFault;
     }
 
