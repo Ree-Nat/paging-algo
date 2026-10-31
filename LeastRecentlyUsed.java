@@ -110,9 +110,9 @@ class LeastRecentlyUsed{
     }
 
     public static void main(String[] args) throws IOException {
-        //generateReferenceStrings("data.txt");
-        int frameSize = 4;
-        System.out.println("Average Total page faults for FIFO in data.txt with frame size of "+ frameSize
+        //generateReferenceStrings("data.txt", 50);
+        int frameSize = 6;
+        System.out.println("Average Total page faults for LRU in data.txt with frame size of "+ frameSize
         +": " + LRU("data.txt", frameSize));
     }
 }

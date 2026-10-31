@@ -103,7 +103,7 @@ class FirstInFirstOut{
 
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt", 50);
-        int frameSize = 4;
+        int frameSize = 6;
         System.out.println("Average Total page faults for FIFO in data.txt with frame size of "+ frameSize
         +": " + FIFO("data.txt", frameSize));
     }
