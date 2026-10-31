@@ -42,23 +42,76 @@ class OptimalAlgorithm{
     }
 
     //Generates first in 
-    static private int Optimal(String textFile, int frameSize) throws IOException
+    static private float Optimal(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
-        int pageFaults = 0; 
+        int totalReferenceStrings = 0;
+        int totalPageFaults = 0;
         File readFile = new File(textFile);
-        List<String> pageList = new ArrayList<String>();
-        List<String> frameList = new ArrayList<String>(Arrays.asList(new String[frameSize]));
         BufferedReader rd = new BufferedReader(new FileReader(readFile));
 
+
+        String referenceString;
+        while((referenceString = rd.readLine()) != null){ 
+            int pageFaults = 0; 
+             totalReferenceStrings +=1;
+             List<Character> frameList = new ArrayList<Character>(Arrays.asList(new Character[frameSize]));
+             for(int currentPageIndex = 0; currentPageIndex < referenceString.length(); currentPageIndex++)
+             {
+                Character currentPage = referenceString.charAt(currentPageIndex);
+                int nullIndex;
+                if(!frameList.contains(currentPage) && (nullIndex = frameList.indexOf(currentPage)) != -1)
+                {
+                    System.out.println("Page fault for: " + currentPage);
+                    pageFaults += 1;
+                    frameList.set(nullIndex, currentPage);
+                }
+                else if(!frameList.contains(currentPage))
+                {
+                    System.out.println("Page fault for: " + currentPage);
+                    pageFaults +=1;
+                    Map<Integer, Character> distanceMap = new HashMap<>(); 
+                    String futureReferences = referenceString.substring(currentPageIndex);
+                    List<Character> pageList = futureReferences.chars()
+                                                .mapToObj(c -> (char) c)
+                                                .toList();
+                    for(Character framePage : frameList)
+                    {
+                        int distance = 0;
+                        distance += pageList.indexOf(framePage);
+                        distanceMap.put(distance, framePage);
+                    }
+                    int maxDistance = Collections.max(distanceMap.keySet()); 
+                    if(distanceMap.containsKey(-1)) //case where an item is not used forever
+                    {
+                        Character unusedPage = distanceMap.get(-1);
+                        frameList.set(frameList.indexOf(unusedPage), currentPage);
+                    }
+                    else{
+                        Character pageRepalcement = pageList.get(maxDistance);
+                        frameList.set(frameList.indexOf(pageRepalcement), currentPage);
+                    }
+                }
+                IntStream.range(0, frameList.size())
+                    .forEach(i -> System.out.println("frame" + (i+1) + ": " + frameList.get(i)));
+                System.out.println("-------------------------------------");
+        }
+                System.out.println("Total page faults for reference String: " + 
+                                                referenceString + "-> " + pageFaults);
+                totalPageFaults += pageFaults;
+     }
+
+        /* 
         String readLine;
         while((readLine = rd.readLine()) != null){ 
             pageList.add(readLine);
         }
 
+        
         for(int page = 0; page < pageList.size(); page++) {
            int nullIndex;
            String pageReference = pageList.get(page);
+
            if(!frameList.contains(pageReference) && ((nullIndex = frameList.indexOf(null)) != -1)) 
            {
                 System.out.println("Page fault for: " + pageReference);
@@ -90,19 +143,18 @@ class OptimalAlgorithm{
                     String pageRepalcement = pageSublist.get(maxDistance);
                     frameList.set(frameList.indexOf(pageRepalcement), pageList.get(page));
                 }
-                /*-------------------------------------------------------------------- Print pages*/
+               
                       IntStream.range(0, frameList.size())
                     .forEach(i -> System.out.println("frame:" + (i+1) + ": " + frameList.get(i)));
            }
-        }
+            /*-------------------------------------------------------------------- Print pages*/
         rd.close();
-
-        return pageFaults;
-       
+        float averagePageFault = totalPageFaults / totalReferenceStrings;
+        return averagePageFault;
     }
-
+       
     public static void main(String[] args) throws IOException {
         //generateReferenceStrings("data.txt");
-        System.out.println("Optimal Number of page faults in data.txt: " + Optimal("data.txt", 3));
+        System.out.println("Optimal Number of average page faults in data.txt: " + Optimal("data.txt", 3));
     }
 }

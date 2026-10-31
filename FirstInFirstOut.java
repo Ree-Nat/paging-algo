@@ -40,6 +40,7 @@ class FirstInFirstOut{
     //Generates first in frist out paging algorithm
     //Input: input of testing data
     //framesize max frame size to test pagefault
+    //Returns: the average page fault per input string file
     static private float FIFO(String textFile, int frameSize) throws IOException
     {
         if (frameSize <= 0) throw new IllegalArgumentException("frameSize must be > 0");
@@ -47,8 +48,6 @@ class FirstInFirstOut{
         BufferedReader rd = new BufferedReader(new FileReader(readFile));
         int totalPageFaults = 0;
         int totalJobs = 0;
-        //circular pointer, points to 
-
         String referenceString;
         while((referenceString = rd.readLine()) != null) 
         {
@@ -95,32 +94,6 @@ class FirstInFirstOut{
                                  + pageFaults);
                 totalPageFaults += pageFaults;
                 totalJobs += 1;
-
-            /* 
-            {
-            if(!frameList.contains(readLine) && !((readIndex = frameList.indexOf(null)) ==-1)){ //replace null with page 
-                pageFaults +=1;
-                frameList.set(readIndex, readLine);
-                System.out.println("Page fault for: " + readLine); 
-                queuePointer +=1;
-            }
-            else if(!frameList.contains(readLine))
-            {
-                pageFaults +=1;
-                frameList.set(queuePointer, readLine);
-                queuePointer+=1;
-                System.out.println("Page fault for: " + readLine); 
-            }
-            
-            //Go back to beginning to ensure queuing 
-            if(queuePointer > frameSize - 1)
-                queuePointer = 0;
-           
-            IntStream.range(0, frameList.size())
-                .forEach(i -> System.out.println("frame:" + (i+1) + ": " + frameList.get(i)));
-
-            System.out.println("-------------------------------------");
-            */
         }
         int averagePageFault = totalPageFaults/totalJobs;
         rd.close();
